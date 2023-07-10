@@ -21,7 +21,7 @@ export const ImageApiSlice = apiSlice.injectEndpoints({
             body:{...credentials}
          }),
         }),
-        addImageById: builder.mutation({
+        addImageByName: builder.mutation({
             query: (credentials) => ({
             url: `images`,
             method: "POST",
@@ -35,5 +35,5 @@ export const {
   useGetImageByIdQuery,
   useRemoveImageByIdMutation,
   useUpdateImageByIdMutation,
-  useAddImageByIdMutation ,
+  useAddImageByNameMutation ,
 } = ImageApiSlice;

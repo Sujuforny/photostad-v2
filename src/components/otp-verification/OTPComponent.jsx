@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from "next/navigation"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCheckVerifyMutation, useResetPasswordMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
-import { selectEmail, selectIsFromForgetPw, setIsFormForgetPw } from '@/store/features/anonymous/anonymousSlice';
+import { useCheckVerifyForgotPasswordMutation, useCheckVerifyMutation, useResetPasswordMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
+import { selectEmail, selectIsFromForgetPw, setCodeVerifyForget, setIsFormForgetPw } from '@/store/features/anonymous/anonymousSlice';
 
 export default function  OtpVerification(){
 	const router = useRouter()
@@ -19,7 +19,7 @@ export default function  OtpVerification(){
   console.log("data in opt",store)
   const isFromForgetPw =  useSelector(selectIsFromForgetPw)
 
-  const [resetPassword ,{ IsLoading : IsLoadingPw }] = useResetPasswordMutation()
+  const [checkVerifyForgotPassword ,{ IsLoading : IsLoadingVerify }] = useCheckVerifyForgotPasswordMutation()
   const [verify, { isLoading }] = useVerifyMutation();
 
   const handleChange = (event, index) => {
@@ -59,7 +59,38 @@ export default function  OtpVerification(){
     const verifiedCode = otp.join('');
     console.log(verifiedCode);
     if(isFromForgetPw){
-      const datPw = await resetPassword(email,verifiedCode)
+      try{
+       const dataVerify = await checkVerifyForgotPassword({email, verifiedCode}).unwrap()
+       toast.success('verify successfully', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    
+      dispatch(setIsFormForgetPw(false));
+      dispatch(setCodeVerifyForget(verifiedCode));
+      router.push("/resetpassword")
+       return ;
+      }catch(err){
+        if(err.data.code===404){
+          toast(`Code verified ${verifiedCode} is Invalid try again.`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
+        return ;
+      }
     }
     try{
       console.log(email,"email user here");
@@ -74,11 +105,6 @@ export default function  OtpVerification(){
             progress: undefined,
             theme: "light",
             });
-        if(isFromForgetPw){
-          router.push("/sendemail")
-          dispatch(setIsFormForgetPw(false));
-          return;
-        }
           router.push("/login")
     }catch(e){ 
         if(e.data.code===404){

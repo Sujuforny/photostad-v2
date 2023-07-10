@@ -3,14 +3,20 @@ import { Formik, Form, Field, useField, useFormikContext } from "formik";
 import React, { useState } from "react";
 import { useSession} from "next-auth/react";
 import { useGetUserQuery, useUpdateProfileMutation } from "@/store/features/user/userApiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "@/store/features/auth/authSlice";
 import { useUploadSingleMutation } from "@/store/features/upload-single/uploadSIngleApiSlice";
+import { useAddImageByNameMutation } from "@/store/features/image/imageApiSlice";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function Page() {
-  const [uploadSingle] =  useUploadSingleMutation()
+  const [addImageByName]= useAddImageByNameMutation()
   const [ updateProfile,{isLoading}] = useUpdateProfileMutation()
   const {data:user} = useSelector(selectCurrentUser)
+  const dispatch = useDispatch()
+
   const initialValues = {
     lastName:user?.givenName, 
     firstName:user?.familyName, 
@@ -19,20 +25,66 @@ export default function Page() {
     image: user?.avatarUrl,
   };
 
-  const handleSubmit =async (values) => {
-    // Handle form submission
-    console.log("values",values);
-    try{
-    const dataFile = await uploadSingle(values.file).unwrap()
-    console.log(dataFile);
-    }catch(e){
-      console.log("Error uploading", e);
+  const handleSubmit = async (values) => {
+    try {
+      // Handle form submission
+      console.log("values file", values);
+      console.log("values file", values.image);
+  
+      const files = values.image;
+      const formdata = new FormData();
+      formdata.append('file', files);
+  
+      const requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow',
+      };
+  
+      const response = await fetch('https://photostad-api.istad.co/api/v1/files', requestOptions);
+      // if (!response.ok) {
+      //   throw new Error(`File upload failed with status ${response.status}`);
+      // }
+      const dataFile = await response.json();
+      console.log("dataFile", dataFile);
+  
+      const name = dataFile?.data.name;
+      const type = "User";
+      try{
+        const dataImage = await addImageByName({ name, type }).unwrap();
+        console.log("dataImage", dataImage);
+        try{
+          const uuid = user?.uuid;
+          const avatar = dataImage?.data.id;
+          const { firstName:familyName, lastName:givenName, gender, biography } = values;
+          console.log(familyName,givenName,uuid,"hehehehehehehehehehhehe ",avatar,gender)
+          const dataUpdateUser = await updateProfile(uuid, { familyName, givenName, gender, avatar, biography });
+          toast.success('successfully', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+          console.log("dataUpdateUser===>", dataUpdateUser);
+          
+        }catch(err){
+          console.log(err,"err form dataUpdateUser");
+        }
+      }catch(e){
+        console.log("Error dataimge=================>",e);
+      }
+    
+      
+    } catch (error) {
+      console.log("Error handling form submission:", error);
+      // Handle the error accordingly (e.g., show an error message to the user)
     }
-
-    const uuid = user?.uuid
-    const {firstName:familyName, lastName:givenName,gender,biography} = values
-    const data = await updateProfile(uuid,{familyName,givenName,gender,biography})
   };
+  
 
   return (
     <div className="bg-white dark:bg-slate-800 shadow-md w-[90%] mx-auto p-5 rounded-[16px]">
@@ -122,6 +174,18 @@ export default function Page() {
           </Form>
         )}
       </Formik>
+      <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="light"
+            />
     </div>
   );
 }

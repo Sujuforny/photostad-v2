@@ -48,11 +48,18 @@ export const authApiSlice = apiSlice.injectEndpoints({
 
       })
     }),
+    checkVerifyForgotPassword: builder.mutation({
+      query: ( credentials ) => ({
+        url: `auth/check-verify-forgot-password`,
+        method: "POST",
+        body: { ...credentials }
+
+      })
+    }),
 
   }),
 });
 // auto generated hooks for login mutation
-// auth/check-verify auth/dashboard/me
 export const { 
   useLoginMutation,
   useRegisterMutation,
@@ -60,5 +67,6 @@ export const {
   useCheckVerifyMutation,
   useGetAdminQuery,
   useVerifyForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
+  useCheckVerifyForgotPasswordMutation
  } = authApiSlice;

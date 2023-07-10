@@ -1,16 +1,15 @@
-import { apiSlice } from "@/store/api/apiSlice";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+export const uploadFile = createAsyncThunk('api/uploadFile', async (file) => {
+  const formdata = new FormData();
+  formdata.append('file', file);
 
-export const uploadSingleApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    uploadSingle: builder.mutation({
-      query: (data) => ({
-        URL: "/files",
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["UploadSingle"],
-    }),
-  }),
+  const requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow',
+  };
+
+  const response = await fetch('https://photostad-api.istad.co/api/v1/files', requestOptions);
+  const result = await response.json();
+  return result;
 });
-// auto generated hooks for uploadSingle mutation (POST)
-export const { useUploadSingleMutation } = uploadSingleApiSlice;

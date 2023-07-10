@@ -16,8 +16,14 @@ const validationSchema = Yup.object({
 })
 import { IoIosArrowDropleft } from "react-icons/io"
 import { ErrorMessage, Field, Form, Formik } from "formik"
+import { useResetPasswordMutation } from "@/store/features/auth/authApiSlice"
 
 export default function page() {
+	const [resetPassword,{isLoading} ] = useResetPasswordMutation()
+	const handleSubmit = (values) => {
+		const dataResetPassword = resetPassword()
+		console.log(values);
+	  };
 	return (
 		<div className='py-10'>
 			<div className='w-[90%] lg:w-[600px] mx-auto shadow-md rounded-[16px] p-5 dark:bg-slate-800 bg-white'>
@@ -44,6 +50,7 @@ export default function page() {
 						confirmPassword: "",
 					}}
 					validationSchema={validationSchema}
+					onSubmit={handleSubmit}
 				>
 					{({ isSubmitting}) => (
 						<Form>

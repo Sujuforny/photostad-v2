@@ -5,6 +5,7 @@ import roleSlice from "./features/role/roleSlice";
 import unreadTotorialSlice from "./features/tutorial/unreadTotorial/unreadTotorialSlice";
 import requestTutorialSlice from "./features/tutorial/requestTutorial/requestTutorialSlice";
 import anonymousSlice from "./features/anonymous/anonymousSlice";
+import uploadSIngleSlice from "./features/upload-single/uploadSIngleSlice";
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         roles: roleSlice,
         unreadRequest: unreadTotorialSlice,
         requestTutorials: requestTutorialSlice,
+        file : uploadSIngleSlice,
         anonymous  : anonymousSlice,
     },
     // this need for rtks query to work with cache and other stuff
