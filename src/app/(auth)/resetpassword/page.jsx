@@ -1,27 +1,38 @@
 "use client"
 import React from "react"
 import * as Yup from "yup"
-
-const validationSchema = Yup.object({
-	password: Yup.string()
-		.min(8, "Password must be at least 8 characters")
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-			"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-		)
-		.required("Required"),
-	confirmPassword: Yup.string()
-		.oneOf([Yup.ref("password"), null], "Passwords must match")
-		.required("Required"),
-})
-import { IoIosArrowDropleft } from "react-icons/io"
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import { useResetPasswordMutation } from "@/store/features/auth/authApiSlice"
+import { useSelector } from "react-redux"
+import { selectCodeVerifyForget, selectEmail } from "@/store/features/anonymous/anonymousSlice"
 
 export default function page() {
+	const validationSchema = Yup.object({
+		password: Yup.string()
+			.min(8, "Password must be at least 8 characters")
+			.matches(
+				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+				"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+			)
+			.required("Required"),
+		confirmPassword: Yup.string()
+			.oneOf([Yup.ref("password"), null], "Passwords must match")
+			.required("Required"),
+	})
 	const [resetPassword,{isLoading} ] = useResetPasswordMutation()
-	const handleSubmit = (values) => {
-		const dataResetPassword = resetPassword()
+	const verifiedCode = useSelector(selectCodeVerifyForget)
+	const email = useSelector(selectEmail)
+
+	const handleSubmit =async (values) => {
+		console.log("============================");
+		const password = values?.password
+        const confirmedPassword = values?.confirmPassword
+		try {
+			const dataResetPassword = await resetPassword({email,password,confirmedPassword,verifiedCode}).unwrap();
+			console.log("dataResetPassword",dataResetPassword);
+		}catch(err){
+			console.log("Couldn't reset password",err);
+		}
 		console.log(values);
 	  };
 	return (
@@ -86,11 +97,12 @@ export default function page() {
 								/>
 							</div>
 							<ErrorMessage name="confirmPassword" component={'div'} className='text-red-500 text-sm mb-6'/>
+			            	<button  type="submit" className='btn-util mt-3  text-white'>save change</button>
+						
 						</Form>
 					)}
 				</Formik>
 
-				<button  type="submit" className='btn-util mt-3  text-white'>save change</button>
 			</div>
 		</div>
 	)

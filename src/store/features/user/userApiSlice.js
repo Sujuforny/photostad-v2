@@ -13,8 +13,8 @@ export const userApiSlice = apiSlice.injectEndpoints({
       providesTags: ["User"], // provideTags are used for updating cache
     }),
     getUserByEmail: builder.query({
-      query: ({userEmail}) => `/users/email?email=${userEmail}`,
-    }), 
+      query: ({ userEmail }) => `/users/email?email=${userEmail}`,
+    }),
     getUserById: builder.query({
       query: (id) => `/users/${id}`,
       keepUnusedDataFor: 5, // keep unused data in cache for 5 seconds
@@ -44,18 +44,18 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["User"],
     }),
     updatePasswordById: builder.mutation({
-      query: (id,credentials) => ({
-      url: `users/${id}/change-password`,
-      method: "PUT",
-      body:{...credentials}
-    }),
+      query: (id, credentials) => ({
+        url: `users/${id}/change-password`,
+        method: "PUT",
+        body: { ...credentials }
+      }),
     }),
 
     updateProfile: builder.mutation({
-      query: ( uuid, credentials ) => ({
+      query: (uuid, credentials) => ({
         url: `users/${uuid}/update-profile-client`,
         method: "PUT",
-        body:{ ...credentials},
+        body: { ...credentials },
       }),
       invalidatesTags: ["User"],
     }),
@@ -73,5 +73,5 @@ export const {
   useGetUserByEmailQuery,
   useUpdatePasswordByIdMutation,
   useUpdateProfileMutation
-  
+
 } = userApiSlice;

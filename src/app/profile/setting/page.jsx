@@ -55,10 +55,12 @@ export default function Page() {
         console.log("dataImage", dataImage);
         try{
           const uuid = user?.uuid;
-          const avatar = dataImage?.data.id;
+          // const avatar = dataImage?.data.id;
+          const avatar = 140;
           const { firstName:familyName, lastName:givenName, gender, biography } = values;
-          console.log(familyName,givenName,uuid,"hehehehehehehehehehhehe ",avatar,gender)
-          const dataUpdateUser = await updateProfile(uuid, { familyName, givenName, gender, avatar, biography });
+          const body={ familyName, givenName, gender, avatar, biography };
+          console.log("body: ");
+          const dataUpdateUser = await updateProfile(uuid,body);
           toast.success('successfully', {
             position: "top-right",
             autoClose: 2000,
