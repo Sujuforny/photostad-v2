@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useSession} from "next-auth/react";
 import { useGetUserQuery, useUpdateProfileMutation } from "@/store/features/user/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUser } from "@/store/features/auth/authSlice";
+import { selectCurrentUser, selectCurrentUserAvatar } from "@/store/features/auth/authSlice";
 import { useUploadSingleMutation } from "@/store/features/upload-single/uploadSIngleApiSlice";
 import { useAddImageByNameMutation } from "@/store/features/image/imageApiSlice";
 import { ToastContainer, toast } from "react-toastify";
@@ -42,12 +42,27 @@ export default function Page() {
       };
   
       const response = await fetch('https://photostad-api.istad.co/api/v1/files', requestOptions);
-      // if (!response.ok) {
-      //   throw new Error(`File upload failed with status ${response.status}`);
-      // }
       const dataFile = await response.json();
       console.log("dataFile", dataFile);
-  
+      if(dataFile.status===400){
+         const uuid = user?.uuid;
+         const avatar = user?.avatar.id
+         const { firstName: familyName, lastName: givenName, gender, biography } = values;
+         const body = { familyName, givenName, gender, avatar, biography };
+         const dataUpdateUser = await updateProfile({ uuid, data: body });      
+         toast.success('successfully', {
+          position: "top-right",
+          autoClose: 2000,  
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+         console.log("dataUpdateUser hehehe", dataUpdateUser);
+         return;
+      }
       const name = dataFile?.data.name;
       const type = "User";
       try{
@@ -55,15 +70,13 @@ export default function Page() {
         console.log("dataImage", dataImage);
         try{
           const uuid = user?.uuid;
-          // const avatar = dataImage?.data.id;
-          const avatar = 140;
-          const { firstName:familyName, lastName:givenName, gender, biography } = values;
-          const body={ familyName, givenName, gender, avatar, biography };
-          console.log("body: ");
-          const dataUpdateUser = await updateProfile(uuid,body);
+          const avatar = dataImage?.data.id;
+          const { firstName: familyName, lastName: givenName, gender, biography } = values;
+          const body = { familyName, givenName, gender, avatar, biography };
+          const dataUpdateUser = await updateProfile({ uuid, data: body });
           toast.success('successfully', {
             position: "top-right",
-            autoClose: 2000,
+            autoClose: 2000,  
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -83,7 +96,7 @@ export default function Page() {
       
     } catch (error) {
       console.log("Error handling form submission:", error);
-      // Handle the error accordingly (e.g., show an error message to the user)
+    
     }
   };
   
@@ -196,7 +209,8 @@ const FileInput = ({ label, ...props }) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(props);
   const [previewImage, setPreviewImage] = useState(null);
-
+  const {data:user} = useSelector(selectCurrentUser)
+  
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];
     setPreviewImage(URL.createObjectURL(file));
@@ -212,17 +226,17 @@ const FileInput = ({ label, ...props }) => {
           name={props.name}
           onChange={handleFileChange}
           className="hidden"
+          
         />
         {previewImage ? (
           <img
-            src={previewImage}
+            src={previewImage ? previewImage : "https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png"}
             alt="Preview"
             className="w-36 mb-2 h-36 object-cover rounded-full"
           />
         ) : (
           <img
-            src={"https://flxt.tmsimg.com/assets/235135_v9_bb.jpg"
-            }
+            src={user?.avatarUrl ? user.avatarUrl :"https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png"}
             alt="avatar"
             className="w-36 mb-2 h-36 object-cover rounded-full"
           />

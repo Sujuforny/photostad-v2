@@ -28,7 +28,7 @@ const NavBar = () => {
       dispatch(setCurrentUser(user));
       const { avatarUrl, familyName, givenName } = user?.data;
       setUserImageUrl(avatarUrl);
-      setUserName(`${familyName} ${givenName}`);
+      setUserName(` ${givenName} ${familyName}`);
     }
     else if (session){
       console.log("object not found");
@@ -169,14 +169,14 @@ const NavBar = () => {
           ) : (
             <>
               <Link
-                href={"./login"}
+                href={"/login"}
                 className=" me-1   hover:text-white hover:shadow-2xl hover:shadow-blue-600 hover:bg-[#23c483] hover:-translate-y-2 transform transition-all duration-300 ease-in-out
                                 bg-[#E85854] hidden md:block text-white font-[35px] text-center py-2  rounded-[16px] w-[88px]  text-[17px]"
               >
                 Log in
               </Link>
               <Link
-                href={"./signup"}
+                href={"/signup"}
                 className="
                                  hover:text-white hover:shadow-2xl hover:shadow-blue-600 hover:bg-[#23c483] hover:-translate-y-2 transform transition-all duration-300 ease-in-out
                                 bg-[#E85854] hidden md:block text-white font-[35px] text-center py-2  rounded-[16px] w-[88px]  text-[17px]"

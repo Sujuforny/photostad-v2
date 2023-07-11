@@ -44,21 +44,23 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["User"],
     }),
     updatePasswordById: builder.mutation({
-      query: (id, credentials) => ({
+      query: ({id, data}) => ({
         url: `users/${id}/change-password`,
         method: "PUT",
-        body: { ...credentials }
+        body: data
       }),
     }),
+ 
 
     updateProfile: builder.mutation({
-      query: (uuid, credentials) => ({
+      query: ({uuid,data}) => ({
         url: `users/${uuid}/update-profile-client`,
         method: "PUT",
-        body: { ...credentials },
+        body: data
       }),
       invalidatesTags: ["User"],
     }),
+
   }),
 });
 

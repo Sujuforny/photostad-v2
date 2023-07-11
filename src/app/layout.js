@@ -7,6 +7,7 @@ import NextThemeProvider from "./NextThemeProvider";
 import NavBar from "@/components/nav";
 import AuthProvider from "./AuthProvider";
 import MainFooter from "@/components/footer";
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
 

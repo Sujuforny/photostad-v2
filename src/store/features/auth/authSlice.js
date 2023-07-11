@@ -33,3 +33,4 @@ export default authSlice.reducer;
 export const selectCurrentUser = (state) => state?.auth.user;
 export const selectCurrentAccessToken = (state) => state?.auth.accessToken;
 export const selectCurrentUserData = (state) => state?.auth.user.data;
+export const selectCurrentUserAvatar = (state) => state?.auth.user.data.avatarUrl

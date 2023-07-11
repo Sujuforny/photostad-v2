@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from "next/navigation"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCheckVerifyForgotPasswordMutation, useCheckVerifyMutation, useResetPasswordMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
+import { useCheckVerifyForgotPasswordMutation, useCheckVerifyMutation, useResetPasswordMutation, useVerifyForgotPasswordMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
 import { selectEmail, selectIsFromForgetPw, setCodeVerifyForget, setIsFormForgetPw } from '@/store/features/anonymous/anonymousSlice';
 
 export default function  OtpVerification(){
@@ -21,6 +21,8 @@ export default function  OtpVerification(){
 
   const [checkVerifyForgotPassword ,{ IsLoading : IsLoadingVerify }] = useCheckVerifyForgotPasswordMutation()
   const [verify, { isLoading }] = useVerifyMutation();
+  const [verifyForgotPassword] = useVerifyForgotPasswordMutation();
+
 
   const handleChange = (event, index) => {
   const { value } = event.target;
@@ -125,6 +127,38 @@ export default function  OtpVerification(){
   }
   const resent =async ()=> {
     setIsResent(true)
+    if(isFromForgetPw){
+      try{
+      const { data } = await verifyForgotPassword(email).unwrap();
+      toast.info('Please check your Email', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        return ;
+      }catch(e){
+        toast.error('Resend failed !', {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+        setTimeout(() => {
+            setIsResent(false)
+            }, 3000);
+            return;
+      }
+    }
+
     try{
       console.log("email..........",email);
       const data = await verify(email).unwrap()

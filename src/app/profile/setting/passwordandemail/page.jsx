@@ -9,6 +9,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { SIdeSettingNav } from "@/components/profile/SideSettingNav";
 import SettingNavMenu from "@/components/profile/SettingNavMenu";
+import { ToastContainer, toast } from "react-toastify";
 
 const validationSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Required"),
@@ -34,10 +35,36 @@ export default function Page() {
       try {
         console.log("data in profile", dataUser);
         const userId = dataUser?.data.uuid;
-        const { data } = await updatePassword(userId, values).unwrap();
-        console.log(data, "updatePassword");
+        const oldPassword = values.currentPassword
+        const newPassword = values.newPassword
+        const confirmedPassword = values.confirmPassword 
+        const data ={
+          oldPassword,
+          newPassword,
+          confirmedPassword
+        }      
+        const { data:pw } = await updatePassword({id:userId, data}).unwrap();
+        toast.success("Password updated successfully", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } catch (e) {
-        console.log("error:", e);
+          toast.error("Invalid old password", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
       }
     }
   };
@@ -190,6 +217,18 @@ export default function Page() {
           </button>
         </Form>
       </Formik>
+      <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover={false}
+      theme="light"
+      />
     </div>
   );
 }

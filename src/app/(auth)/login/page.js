@@ -33,21 +33,25 @@ const Page = () => {
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (values) => {
+    setIsSubmit(true);
     const { email, password } = values;
     try {
       const { data } = await login({ email, password }).unwrap();
       console.log("data user login =>", data);
       dispatch(setCredentials(data));
+      setIsSubmit(false);
       router.push("/");
     } catch (error) {
       console.log("error login", error);
-      if (error.data && error.data.statusCode === 401) {
+      setIsSubmit(false);
+      if (error.data && error.data.code === 401) {
         setLoginError("Invalid email or password");
       } else {
         setLoginError("An error occurred during login");
@@ -143,9 +147,34 @@ const Page = () => {
               <div className="mt-8">
                 <button
                   type="submit"
-                  className="rounded-[16px] cursor-pointer hover:bg-gray-700  bg-[#E85854] p-2.5 w-full text-white border-none "
-                >
-                  Log in
+                  className={`rounded-[16px]  hover:bg-gray-700  bg-[#E85854] p-2.5 w-full text-white border-none 
+                              ${isLoading ? "cursor-wait":"cursor-pointer"}`}
+                              disabled={isSubmit}
+               >
+                 {
+                  isLoading ? (                  
+                          <svg
+                            className="animate-spin h-5 w-5 mx-auto text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            ></circle>
+                            <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 004 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          ) : "Log in"
+                 } 
                 </button>
               </div>
               <div className="divider dark:divide-white">
