@@ -183,7 +183,6 @@ const Page = () => {
 								<div className='divider'>
 									<span className='font-extralight text-[12px]'>OR</span>
 								</div>
-
 								<button
 									onClick={() => signIn("google")}
 									className='cursor-pointer p-2.5 bg-slate-100 dark:bg-black  dark:text-white  border w-full rounded-[16px]'

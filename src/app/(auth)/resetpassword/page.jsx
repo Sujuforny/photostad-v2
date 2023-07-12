@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useResetPasswordMutation } from "@/store/features/auth/authApiSlice";
-import { useSelector } from "react-redux";
-import { selectCodeVerifyForget, selectEmail } from "@/store/features/anonymous/anonymousSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCodeVerifyForget, selectEmail, setCodeVerifyForget, setEmail } from "@/store/features/anonymous/anonymousSlice";
 import { HiEyeOff, HiEye } from "react-icons/hi";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch()
   const validationSchema = Yup.object({
     password: Yup.string()
       .min(8, "Password must be at least 8 characters")
@@ -43,7 +44,7 @@ export default function Page() {
       const message = dataResetPassword.message
         ? dataResetPassword.message
         : "You change password success.";
-      toast.success(message, {
+        toast.success(message, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -54,6 +55,8 @@ export default function Page() {
         theme: "light",
       });
       console.log("dataResetPassword", dataResetPassword);
+      dispatch(setCodeVerifyForget(""));
+      dispatch(setEmail(""))
       router.push("/login");
       return;
     } catch (err) {

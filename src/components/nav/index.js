@@ -33,11 +33,12 @@ const NavBar = () => {
     else if (session){
       console.log("object not found");
       setLogIn(true);
+      console.log("user already logged in",session);
       setUserImageUrl(session?.user?.image);
       setUserName(session?.user?.name);
     }
   }, [dispatch, isSuccess, user,session]);
- console.log("username and image",userName,userImageUrl);
+  console.log("username and image",userName,userImageUrl);
   const logouts =async () => {
     dispatch(logout());
     await signOut({ redirect: false });

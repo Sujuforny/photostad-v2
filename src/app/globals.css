@@ -96,3 +96,43 @@ input:checked+.slider:before {
 #aside{
   width: 500px !important;
 }
+
+/* style about us */
+.loader {
+  padding: 0;
+  margin: 0 !important;
+  position: relative;
+  overflow: hidden;
+  border-right: 3px solid;
+  width: 0px;
+  animation: typewriter 2s steps(10)  infinite alternate , blink 0.5s steps(10) infinite;
+}
+
+.loader-text {
+  font-size: 100px;
+  font-weight: 900;
+  background: linear-gradient(to right,#E85854, #976b69);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes typewriter {
+  0% {
+    width: 0px;
+  }
+
+  100% {
+    width: 750px;
+  }
+}
+
+@keyframes blink {
+  0% {
+    border-right-color: rgba(255,255,255,.75);
+    ;
+  }
+
+  100% {
+    border-right-color: transparent;
+  }
+}

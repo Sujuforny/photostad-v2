@@ -14,12 +14,11 @@ const Page = () => {
 					<h1 className=' title-about-1 lg:text-[40px] text-2xl md:text-[30px] font-medium dark:text-white text-black '>
 						ABOUT
 					</h1>
-					<h1 className='title-about-2 text-3xl lg:text-[80px] xl:my-10 md:text-[50px] font-black text-[#e85854]'>
-						{" "}
-						PHOTOSTAD
-					</h1>
+					<div class="loader m-0">
+					<span class="loader-text">PHOTOSTAD</span>
+					</div>
 					{/* description */}
-					<p className=' lg:text-[20px] max-sm:line-clamp-3  text md:text-[16px] dark:text-white text-black '>
+					<p className='m-0 lg:text-[20px] max-sm:line-clamp-3  text md:text-[16px] dark:text-white text-black '>
 						With our easy-to-use watermark maker and certificate <br />
 						generator, you can create professional-looking <br />
 						watermarks and certificates in seconds. Enhance your <br />
