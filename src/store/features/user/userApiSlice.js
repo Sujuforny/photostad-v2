@@ -7,19 +7,23 @@ export const userApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5, // keep unused data in cache for 5 seconds
       providesTags: ["User"], // provideTags are used for updating cache
     }),
+
     getAllUsers: builder.query({
       query: () => `/users`,
       keepUnusedDataFor: 5, // keep unused data in cache for 5 seconds
       providesTags: ["User"], // provideTags are used for updating cache
     }),
+
     getUserByEmail: builder.query({
       query: ({ userEmail }) => `/users/email?email=${userEmail}`,
     }),
+
     getUserById: builder.query({
       query: (id) => `/users/${id}`,
       keepUnusedDataFor: 5, // keep unused data in cache for 5 seconds
       providesTags: ["User"], // provideTags are used for updating cache
     }),
+
     createUser: builder.mutation({
       query: (body) => ({
         url: `/users`,
@@ -28,6 +32,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"], // invalidatesTags are used for updating cache
     }),
+
     updateUser: builder.mutation({
       query: ({ id, body }) => ({
         url: `/users/${id}`,
@@ -36,6 +41,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
     deleteUser: builder.mutation({
       query: (id) => ({
         url: `/users/${id}`,
@@ -43,6 +49,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
     updatePasswordById: builder.mutation({
       query: ({id, data}) => ({
         url: `users/${id}/change-password`,
@@ -61,9 +68,17 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
+    updateInformationClient: builder.mutation({
+      query: ({uuid,data}) => ({
+        url: `users/${uuid}/update-information-client`,
+        method: "PUT",
+        body: data
+      }),
+      invalidatesTags: ["User"],
+    }),
+
   }),
 });
-
 // auto generated hooks for getUser query (GET)
 export const {
   useGetUserQuery,
@@ -74,6 +89,7 @@ export const {
   useUpdateUserMutation,
   useGetUserByEmailQuery,
   useUpdatePasswordByIdMutation,
-  useUpdateProfileMutation
+  useUpdateProfileMutation,
+  useUpdateInformationClientMutation
 
 } = userApiSlice;
