@@ -2,7 +2,6 @@ import Providers from "@/store/Providers";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
-import Outlet from "@/middleware/Outlet";
 import NextThemeProvider from "./NextThemeProvider";
 import NavBar from "@/components/nav";
 import AuthProvider from "./AuthProvider";
